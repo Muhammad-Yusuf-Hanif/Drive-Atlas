@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+/**
+ * Global styles intentionally do a bit more than Tailwind defaults.
+ * They define the visual direction of the project and a few shared surfaces.
+ */
+@theme {
+  --font-display: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+  --font-body: "Aptos", "Segoe UI Variable Text", "Segoe UI", sans-serif;
+}
+
+:root {
+  font-family: var(--font-body);
+  color: #0f172a;
+  background: #09111d;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: rgba(245, 158, 11, 0.32);
+  color: #020617;
+}
