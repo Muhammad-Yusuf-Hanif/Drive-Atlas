@@ -3,34 +3,39 @@
 ## Directory Structure
 
 ```text
-src/
-  components/
-    brand/        # Brand and model-specific presentation components
-    layout/       # Shared application shell pieces
-    ui/           # Reusable low-level UI building blocks
-  data/           # Typed local data that powers the website
-  pages/          # Route-level screens
-  router/         # React Router setup
-  types/          # Shared TypeScript types
-  utils/          # Small helpers
+frontend/
+  src/
+    api/          # Frontend HTTP helpers
+    components/
+      brand/      # Brand and model-specific presentation components
+      layout/     # Shared application shell pieces
+      ui/         # Reusable low-level UI building blocks
+    hooks/        # Data-fetching hooks
+    pages/        # Route-level screens
+    router/       # React Router setup
+    types/        # Shared TypeScript types
+    utils/        # Small helpers
+backend/
+  src/
+    data/         # API-backed vehicle dataset
+    utils/        # Backend asset helpers
+    server.js     # Express application entry point
 ```
 
 ## How The App Is Organized
 
-- `src/App.tsx` stays minimal and only mounts the router.
-- `src/router/AppRouter.tsx` contains the route definitions.
-- `src/components/layout` contains the shared header and shell used by every page.
-- `src/components/ui` contains reusable pieces like cards, CTA links, breadcrumbs, and spec items.
-- `src/components/brand` contains components that understand the brand/model domain.
-- `src/pages` contains route-aware screens and URL parameter resolution.
-- `src/data/carBrands.ts` is the single source of truth for the current brand and model content.
+- `frontend/src/App.tsx` stays minimal and only mounts the router.
+- `frontend/src/pages` contains route-aware screens that fetch their own API data.
+- `frontend/src/api` and `frontend/src/hooks` isolate the fetch logic from the page UI.
+- `backend/src/server.js` exposes slug-based routes that mirror the brand/model pages.
+- `backend/src/data/carBrands.js` is the current API-side source of truth for the vehicle dataset.
 
 ## Why This Structure Works
 
+- The frontend and backend can evolve independently.
 - Reusable UI is separated from route files, so pages stay small.
-- Brand-aware components are isolated from generic UI primitives.
-- Typed mock data makes it easy to replace the local dataset with an API later.
-- The routing layer remains obvious and easy to extend.
+- The frontend no longer bundles the source dataset directly.
+- The API contract now matches the page URL structure closely enough to expand into a larger catalog later.
 
 ## Comments In Code
 
