@@ -1,16 +1,8 @@
 /**
- * The project uses inline generated SVG data URLs for car visuals.
- * This keeps the starter project self-contained without needing external assets.
+ * The backend generates lightweight inline SVG image URLs so the frontend can
+ * consume the same shape data over HTTP without a separate asset pipeline.
  */
-export function createCarImage({
-  body,
-  accent,
-  glow,
-}: {
-  body: string
-  accent: string
-  glow: string
-}) {
+export function createCarImage({ body, accent, glow }) {
   const svg = `
     <svg width="920" height="420" viewBox="0 0 920 420" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>

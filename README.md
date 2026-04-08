@@ -1,41 +1,49 @@
 # Drive Atlas
 
-Drive Atlas is a React, TypeScript, Tailwind, and React Router frontend project for browsing official car brands, their model ranges, and focused model detail pages.
+Drive Atlas is now split into separate frontend and backend applications.
 
-## Stack
+## Structure
 
-- React 19
-- TypeScript
-- Vite
-- Tailwind CSS v4
-- React Router
-- Lucide React
-- `clsx`
+- [frontend](./frontend) contains the React, TypeScript, Tailwind, and React Router client.
+- [backend](./backend) contains the Node.js + Express API that serves brand and model data.
 
-## Scripts
+## Run Locally
 
-- `npm run dev` starts the local Vite dev server
-- `npm run build` creates the production build
-- `npm run lint` runs ESLint
-- `npm run preview` previews the production build locally
+In one terminal:
 
-## Main User Flow
+```bash
+npm run dev:backend
+```
 
-1. The homepage shows a vertical list of brand cards for Audi and BMW.
-2. Clicking a brand card routes to `/:brandSlug`.
-3. The brand page shows a vertical list of model cards for that brand.
-4. Clicking a model card routes to `/:brandSlug/:modelSlug`.
-5. The model page shows the selected model image, specs, colours, and design notes.
+In a second terminal:
+
+```bash
+npm run dev:frontend
+```
+
+The frontend uses Vite and proxies `/api` requests to the Express backend on `http://localhost:3001`.
+
+## Frontend Scripts
+
+From the repo root:
+
+- `npm run dev:frontend`
+- `npm run build:frontend`
+- `npm run lint:frontend`
+
+## Backend Scripts
+
+From the repo root:
+
+- `npm run dev:backend`
+
+Or from the backend directory:
+
+- `npm run dev`
+- `npm run start`
 
 ## Documentation
 
 - [PRODUCT.md](./PRODUCT.md) explains the product concept and target experience.
 - [ARCHITECTURE.md](./ARCHITECTURE.md) explains the folder structure and code organization.
-- [CONTENT.md](./CONTENT.md) explains how the current car dataset is structured and how to extend it.
-
-## Quick Start
-
-```bash
-npm install
-npm run dev
-```
+- [CONTENT.md](./CONTENT.md) explains how the current vehicle dataset is structured.

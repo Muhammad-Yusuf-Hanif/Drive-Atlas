@@ -5,7 +5,7 @@ import { Card } from '../ui/Card'
 import { SpecItem } from '../ui/SpecItem'
 
 type ModelHeroProps = {
-  brand: CarBrand
+  brand: Omit<CarBrand, 'models'>
   model: CarModel
 }
 
@@ -16,13 +16,13 @@ type ModelHeroProps = {
 export function ModelHero({ brand, model }: ModelHeroProps) {
   return (
     <Card className="overflow-hidden p-0">
-      <div className="grid lg:grid-cols-[1.5fr_1fr]">
+      <div className="grid lg:grid-cols-[1.2fr_0.8fr]">
         <div
-          className="relative min-h-[22rem] overflow-hidden p-6 sm:p-8"
+          className="relative overflow-hidden p-6 sm:p-8"
           style={{ background: model.imageBackground }}
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.24),_transparent_32%)]" />
-          <div className="relative z-10 flex h-full flex-col justify-between">
+          <div className="relative z-10">
             <div className="max-w-xl text-white">
               <p className="text-xs uppercase tracking-[0.35em] text-white/70">{brand.name}</p>
               <h2 className="mt-3 font-['Bahnschrift','Segoe_UI_Variable_Display','Trebuchet_MS',sans-serif] text-4xl tracking-[0.06em]">
@@ -31,11 +31,19 @@ export function ModelHero({ brand, model }: ModelHeroProps) {
               <p className="mt-4 max-w-lg leading-7 text-white/85">{model.longDescription}</p>
             </div>
 
-            <img
-              src={model.image}
-              alt={`${brand.name} ${model.name}`}
-              className="mx-auto mt-8 w-full max-w-3xl drop-shadow-[0_28px_45px_rgba(2,6,23,0.42)]"
-            />
+            <div className="mt-8 rounded-[1.5rem] border border-white/15 bg-slate-950/25 p-5 backdrop-blur-sm">
+              <div className="mb-4 flex items-center gap-2 text-white">
+                <Settings2 className="h-4 w-4" />
+                <h3 className="text-sm font-semibold uppercase tracking-[0.28em]">Core specs</h3>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                <SpecItem label="Power" value={model.specs.power} />
+                <SpecItem label="0-60 mph" value={model.specs.zeroToSixty} />
+                <SpecItem label="Top speed" value={model.specs.topSpeed} />
+                <SpecItem label="Drivetrain" value={model.specs.drivetrain} />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -45,13 +53,6 @@ export function ModelHero({ brand, model }: ModelHeroProps) {
               {model.category}
             </div>
             <p className="leading-7 text-slate-600">{model.shortDescription}</p>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-            <SpecItem label="Power" value={model.specs.power} />
-            <SpecItem label="0-60 mph" value={model.specs.zeroToSixty} />
-            <SpecItem label="Top speed" value={model.specs.topSpeed} />
-            <SpecItem label="Drivetrain" value={model.specs.drivetrain} />
           </div>
 
           <div className="grid gap-4 rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">

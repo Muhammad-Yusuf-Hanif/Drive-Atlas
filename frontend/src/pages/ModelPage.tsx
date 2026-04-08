@@ -1,11 +1,14 @@
 import { Navigate, useParams } from 'react-router-dom'
 
 import { ModelHero } from '../components/brand/ModelHero'
+import { OwnershipInfoCard } from '../components/brand/OwnershipInfoCard'
 import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { ButtonLink } from '../components/ui/ButtonLink'
 import { Card } from '../components/ui/Card'
 import { SpecItem } from '../components/ui/SpecItem'
-import { getBrandBySlug, getModelBySlug } from '../data/carBrands'
+import { StatusCard } from '../components/ui/StatusCard'
+import { useApiResource } from '../hooks/useApiResource'
+import type { ModelPagePayload } from '../types/cars'
 
 /**
  * This page resolves both the brand and model route params.
@@ -13,12 +16,33 @@ import { getBrandBySlug, getModelBySlug } from '../data/carBrands'
  */
 export function ModelPage() {
   const { brandSlug, modelSlug } = useParams()
-  const brand = getBrandBySlug(brandSlug)
-  const model = getModelBySlug(brandSlug, modelSlug)
+  const { data, errorStatus, isLoading } = useApiResource<ModelPagePayload>(
+    `/api/${brandSlug ?? ''}/${modelSlug ?? ''}`,
+  )
 
-  if (!brand || !model) {
+  if (errorStatus === 404) {
     return <Navigate to="/not-found" replace />
   }
+
+  if (isLoading) {
+    return (
+      <StatusCard
+        title="Loading model"
+        description="The model page is fetching the selected vehicle record from the backend API."
+      />
+    )
+  }
+
+  if (errorStatus || !data) {
+    return (
+      <StatusCard
+        title="Unable to load this model"
+        description="The frontend could not retrieve the selected model from the backend. Check that the backend server is running and the route exists."
+      />
+    )
+  }
+
+  const { brand, model } = data
 
   return (
     <div className="space-y-10">
@@ -72,6 +96,7 @@ export function ModelPage() {
           </div>
         </Card>
       </section>
+      {model.ownershipInfo ? <OwnershipInfoCard info={model.ownershipInfo} /> : null}
     </div>
   )
 }

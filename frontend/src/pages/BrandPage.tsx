@@ -4,7 +4,9 @@ import { ModelCard } from '../components/brand/ModelCard'
 import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { ButtonLink } from '../components/ui/ButtonLink'
 import { SectionHeading } from '../components/ui/SectionHeading'
-import { getBrandBySlug } from '../data/carBrands'
+import { StatusCard } from '../components/ui/StatusCard'
+import { useApiResource } from '../hooks/useApiResource'
+import type { CarBrand } from '../types/cars'
 
 /**
  * The brand page resolves the URL parameter into the matching brand dataset.
@@ -12,10 +14,30 @@ import { getBrandBySlug } from '../data/carBrands'
  */
 export function BrandPage() {
   const { brandSlug } = useParams()
-  const brand = getBrandBySlug(brandSlug)
+  const { data: brand, errorStatus, isLoading } = useApiResource<CarBrand>(
+    `/api/${brandSlug ?? ''}`,
+  )
 
-  if (!brand) {
+  if (errorStatus === 404) {
     return <Navigate to="/not-found" replace />
+  }
+
+  if (isLoading) {
+    return (
+      <StatusCard
+        title="Loading brand"
+        description="The brand route is fetching models, specs, and colour information from the backend API."
+      />
+    )
+  }
+
+  if (errorStatus || !brand) {
+    return (
+      <StatusCard
+        title="Unable to load this brand"
+        description="The frontend could not retrieve the selected brand from the backend. Check that the backend server is running and the route exists."
+      />
+    )
   }
 
   return (
