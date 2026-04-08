@@ -35,8 +35,8 @@ export function HomePage() {
       <section className="rounded-[2rem] border border-white/10 bg-slate-950/40 px-6 py-10 shadow-[0_25px_90px_rgba(2,6,23,0.35)] sm:px-8 lg:px-10">
         <SectionHeading
           eyebrow="Official brand explorer"
-          title="Compare the lines, colours, and performance signatures of German icons."
-          description="Start at the manufacturer level, move into model ranges, and finish on a focused vehicle detail page with visual design cues and headline specifications."
+          title="Compare the lines, specs, and ownership signals of the UK's most searched car brands."
+          description="Start at the manufacturer level, move into model ranges, and finish on a focused vehicle detail page with design cues, specifications, recalls, service guidance, and buyer context."
           actions={
             <>
               {carBrands[0] ? (
