@@ -11,11 +11,35 @@ import { useApiResource } from '../hooks/useApiResource'
 import type { ModelPagePayload } from '../types/cars'
 
 /**
- * This page resolves both the brand and model route params.
- * That keeps the URL as the source of truth for what the user is viewing.
+ * Beginner note:
+ * This is the older single-model detail page.
+ * It still matters because the app remains backward compatible while the newer
+ * family/generation/variant browsing flow is being rolled out.
+ *
+ * File flow:
+ * AppRouter route -> ModelPage -> useParams reads the URL ->
+ * useApiResource calls `/api/:brandSlug/:modelSlug` ->
+ * backend compatibility route returns `{ brand, model }` ->
+ * this page renders the detail view.
+ *
+ * Product role:
+ * If a bookmarked or older internal link still points directly to a model slug,
+ * this page prevents that journey from breaking.
  */
 export function ModelPage() {
+  /**
+   * `useParams()` comes from React Router.
+   * It reads pieces of the current URL and gives them back as strings.
+   * Example:
+   * URL `/bmw/330i` -> `{ brandSlug: 'bmw', modelSlug: '330i' }`
+   */
   const { brandSlug, modelSlug } = useParams()
+
+  /**
+   * `?? ''` is the nullish coalescing operator.
+   * It means "if the left side is null or undefined, use an empty string instead."
+   * That keeps the request path from becoming `undefined` text.
+   */
   const { data, errorStatus, isLoading } = useApiResource<ModelPagePayload>(
     `/api/${brandSlug ?? ''}/${modelSlug ?? ''}`,
   )
@@ -46,6 +70,7 @@ export function ModelPage() {
 
   return (
     <div className="space-y-10">
+      {/* Breadcrumbs mirror the route hierarchy so users can move back up the navigation tree. */}
       <Breadcrumbs
         items={[
           { label: 'Home', to: '/' },
@@ -54,6 +79,7 @@ export function ModelPage() {
         ]}
       />
 
+      {/* ModelHero is a presentational component that turns model data into a richer top section. */}
       <ModelHero brand={brand} model={model} />
 
       <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
@@ -65,6 +91,7 @@ export function ModelPage() {
           <p className="mt-4 leading-7 text-slate-600">{model.overview}</p>
 
           <div className="mt-8 grid gap-3 sm:grid-cols-2">
+            {/* These extra specs complement the hero without duplicating the same exact information. */}
             <SpecItem label="Transmission" value={model.specs.transmission} />
             <SpecItem label="Seats" value={model.specs.seats} />
             <SpecItem label="Fuel type" value={model.specs.fuelType} />
@@ -96,6 +123,7 @@ export function ModelPage() {
           </div>
         </Card>
       </section>
+      {/* Ownership info is optional so older records can still render safely even if this field is missing. */}
       {model.ownershipInfo ? <OwnershipInfoCard info={model.ownershipInfo} /> : null}
     </div>
   )

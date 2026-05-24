@@ -9,11 +9,24 @@ type BrandCardProps = {
 }
 
 /**
- * The homepage only needs a brand summary and a route target.
- * Keeping this focused makes the card reusable in future brand index views.
+ * Beginner note:
+ * This component receives one `brand` object and turns it into a clickable card.
+ * It does not fetch data itself. That is important:
+ * pages usually fetch data, and components usually display data.
+ *
+ * Used in:
+ * `frontend/src/pages/HomePage.tsx`
+ *
+ * Product role:
+ * A brand card is the first clickable choice in the app's main journey.
  */
 export function BrandCard({ brand }: BrandCardProps) {
   return (
+    /**
+     * Template literal syntax:
+     * `` `/${brand.slug}` ``
+     * builds a string dynamically, such as `/bmw`.
+     */
     <Link to={`/${brand.slug}`} className="group block">
       <Card className="overflow-hidden p-0 transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_90px_rgba(15,23,42,0.2)]">
         <div
@@ -51,6 +64,21 @@ export function BrandCard({ brand }: BrandCardProps) {
               Signature language
             </p>
             <p className="mt-2 text-lg font-semibold text-slate-950">{brand.signature}</p>
+            {brand.currentFamilies?.length ? (
+              /**
+               * Optional chaining `?.` means:
+               * "Only read `.length` if `currentFamilies` exists."
+               * This avoids a crash on brands that do not yet have current-family data.
+               */
+              <div className="mt-4 inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-blue-800">
+                Family browsing available
+              </div>
+            ) : null}
+            {brand.historicalFamilies?.length ? (
+              <div className="mt-4 inline-flex rounded-full border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-amber-800">
+                Legacy research available
+              </div>
+            ) : null}
           </div>
 
           <div className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition group-hover:bg-slate-800">

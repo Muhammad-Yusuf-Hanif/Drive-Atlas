@@ -10,13 +10,22 @@ type ModelHeroProps = {
 }
 
 /**
- * The model detail page needs a stronger focal point than the list cards.
- * This component combines imagery, colours, and key specs into a hero panel.
+ * Beginner note:
+ * This is a larger, more detailed presentation component for a single model.
+ * It is not responsible for routing or data fetching. It only receives props
+ * from the page that already loaded the data.
+ *
+ * Used in:
+ * `frontend/src/pages/ModelPage.tsx`
+ *
+ * Product role:
+ * This turns raw backend data into a strong first impression on the detail page.
  */
 export function ModelHero({ brand, model }: ModelHeroProps) {
   return (
     <Card className="overflow-hidden p-0">
       <div className="grid lg:grid-cols-[1.2fr_0.8fr]">
+        {/* Left side: emotional/visual context. */}
         <div
           className="relative overflow-hidden p-6 sm:p-8"
           style={{ background: model.imageBackground }}
@@ -47,6 +56,7 @@ export function ModelHero({ brand, model }: ModelHeroProps) {
           </div>
         </div>
 
+        {/* Right side: more practical, scannable information. */}
         <div className="space-y-6 bg-white/90 p-6 sm:p-8">
           <div>
             <div className="mb-3 inline-flex rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white">
@@ -61,6 +71,7 @@ export function ModelHero({ brand, model }: ModelHeroProps) {
               <h3 className="text-sm font-semibold uppercase tracking-[0.28em]">Available colours</h3>
             </div>
             <div className="flex flex-wrap gap-3">
+              {/* `map` loops through every colour object and returns one small UI block per colour. */}
               {model.colours.map((colour) => (
                 <div
                   key={colour.name}

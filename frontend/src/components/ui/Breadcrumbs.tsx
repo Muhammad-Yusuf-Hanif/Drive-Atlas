@@ -16,6 +16,8 @@ type BreadcrumbsProps = {
  */
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
   return (
+    // Breadcrumbs are especially helpful in this codebase because the route
+    // hierarchy mirrors the data hierarchy: brand -> family -> generation -> variant.
     <nav aria-label="Breadcrumb" className="mb-8">
       <ol className="flex flex-wrap items-center gap-2 text-sm text-slate-200">
         {items.map((item, index) => (

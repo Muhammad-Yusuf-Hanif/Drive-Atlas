@@ -2,7 +2,14 @@ import { ButtonLink } from '../components/ui/ButtonLink'
 import { Card } from '../components/ui/Card'
 
 /**
- * A custom 404 keeps the experience coherent when a user types a wrong URL.
+ * Beginner note:
+ * This is the fallback page for bad routes.
+ * React Router sends users here when a URL does not match a valid page or
+ * when another page deliberately redirects after receiving a 404 from the API.
+ *
+ * Product role:
+ * A dedicated 404 page is better UX than a blank screen because it explains
+ * the problem and gives the user an obvious recovery path.
  */
 export function NotFoundPage() {
   return (

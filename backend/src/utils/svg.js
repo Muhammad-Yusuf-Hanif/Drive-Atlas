@@ -1,8 +1,24 @@
 /**
- * The backend generates lightweight inline SVG image URLs so the frontend can
- * consume the same shape data over HTTP without a separate asset pipeline.
+ * Beginner note:
+ * This helper creates a car-shaped SVG image as a `data:` URL string.
+ * The frontend can then use that string directly in an `<img src="...">`
+ * without storing separate image files on disk.
+ *
+ * Used in:
+ * `backend/src/data/carBrands.js`
+ * `backend/src/data/currentFamilies.js`
+ * `backend/src/data/historicalFamilies.js`
+ *
+ * Business role:
+ * This keeps the demo/project lightweight and avoids the complexity of managing
+ * a full image asset pipeline during early development.
  */
 export function createCarImage({ body, accent, glow }) {
+  /**
+   * Template literals use backticks instead of quotes.
+   * They allow multiline strings and `${...}` interpolation.
+   * Here we inject colour values directly into the SVG markup.
+   */
   const svg = `
     <svg width="920" height="420" viewBox="0 0 920 420" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -33,5 +49,9 @@ export function createCarImage({ body, accent, glow }) {
     </svg>
   `
 
+  /**
+   * `encodeURIComponent` makes the SVG safe to place inside a URL string.
+   * Without encoding, spaces and special characters could break the image source.
+   */
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
 }

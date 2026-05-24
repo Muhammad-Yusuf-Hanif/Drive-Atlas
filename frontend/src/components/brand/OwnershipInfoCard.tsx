@@ -8,8 +8,18 @@ type OwnershipInfoCardProps = {
 }
 
 /**
- * This card deliberately separates ownership and maintenance guidance from the
- * marketing-style overview content so buyers can find practical information fast.
+ * Beginner note:
+ * This component renders the "serious buyer" information:
+ * maintenance, recalls, ownership risk, fluids, and common faults.
+ *
+ * Used in:
+ * `frontend/src/pages/ModelPage.tsx`
+ * `frontend/src/pages/HistoricalVariantPage.tsx`
+ * likely any future detailed vehicle page that includes `ownershipInfo`
+ *
+ * Product role:
+ * This is the practical research section. Without it, the app would feel more
+ * like a brochure than a buying/research tool.
  */
 export function OwnershipInfoCard({ info }: OwnershipInfoCardProps) {
   return (
@@ -23,6 +33,7 @@ export function OwnershipInfoCard({ info }: OwnershipInfoCardProps) {
       </div>
 
       <section className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+        {/* Risk summary helps users assess whether a car is a safe or demanding used buy. */}
         <div className="rounded-[1.5rem] border border-rose-200 bg-rose-50 p-5">
           <div className="flex items-center gap-2 text-rose-950">
             <Gauge className="h-4 w-4" />
@@ -57,6 +68,7 @@ export function OwnershipInfoCard({ info }: OwnershipInfoCardProps) {
               Prioritise these features
             </p>
             <ul className="mt-3 space-y-3 text-sm leading-6 text-slate-600">
+              {/* Each array item becomes one recommendation chip/card. */}
               {info.bestSpecToBuy.recommendedFeatures.map((feature) => (
                 <li key={feature} className="rounded-2xl border border-emerald-200 bg-white p-4">
                   {feature}
@@ -123,6 +135,7 @@ export function OwnershipInfoCard({ info }: OwnershipInfoCardProps) {
           <h4 className="text-sm font-semibold uppercase tracking-[0.28em]">Pre-LCI vs LCI highlights</h4>
         </div>
         <div className="mt-4 space-y-4">
+          {/* Facelift guide compares two product periods inside the same generation. */}
           {info.faceliftGuide.map((change) => (
             <div key={change.area} className="rounded-2xl border border-slate-200 bg-white p-4">
               <p className="text-sm font-semibold text-slate-950">{change.area}</p>
@@ -154,6 +167,7 @@ export function OwnershipInfoCard({ info }: OwnershipInfoCardProps) {
           <h4 className="text-sm font-semibold uppercase tracking-[0.28em]">Recalls</h4>
         </div>
         <div className="mt-4 space-y-4">
+          {/* External links point users to official recall sources rather than copying the full data into the UI. */}
           {info.recalls.map((recall) => (
             <div key={recall.recallNumber} className="rounded-2xl border border-amber-200 bg-white p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
@@ -209,6 +223,7 @@ export function OwnershipInfoCard({ info }: OwnershipInfoCardProps) {
       </section>
 
       <section className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
+        {/* A disclaimer is a business safeguard because this project summarizes data but should not pretend to replace VIN-specific checks. */}
         <p className="text-sm leading-6 text-slate-600">{info.disclaimer}</p>
       </section>
     </Card>

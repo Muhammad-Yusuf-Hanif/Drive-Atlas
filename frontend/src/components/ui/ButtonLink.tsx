@@ -9,8 +9,12 @@ type ButtonLinkProps = ComponentPropsWithoutRef<typeof Link> & {
 }
 
 /**
- * This wraps Router Link with button styling so navigation CTAs stay consistent
- * across the homepage, brand pages, and model pages.
+ * Beginner note:
+ * This component is still a link for routing purposes, but it looks like a button.
+ * That distinction matters:
+ * links are for navigation, buttons are for actions.
+ *
+ * Used in many pages wherever the app needs a prominent navigation CTA.
  */
 export function ButtonLink({
   children,
@@ -20,6 +24,11 @@ export function ButtonLink({
 }: ButtonLinkProps) {
   return (
     <Link
+      /**
+       * `variant` is a prop that switches between two style presets.
+       * This is a simple example of component composition:
+       * the same navigation component can appear in multiple visual styles.
+       */
       className={cn(
         'inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold tracking-wide no-underline transition duration-200',
         variant === 'primary' &&

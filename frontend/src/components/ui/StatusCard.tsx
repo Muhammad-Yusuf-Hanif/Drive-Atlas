@@ -6,8 +6,12 @@ type StatusCardProps = {
 }
 
 /**
- * Shared status card keeps loading and request errors visually consistent
- * across all route-driven pages.
+ * Beginner note:
+ * This component is used for loading and error states.
+ * Instead of every page inventing its own loading UI, they all reuse this.
+ *
+ * Product role:
+ * Consistent state handling makes the app feel more predictable and polished.
  */
 export function StatusCard({ title, description }: StatusCardProps) {
   return (

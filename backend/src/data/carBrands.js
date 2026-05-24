@@ -1,5 +1,21 @@
 import { createCarImage } from '../utils/svg.js'
 
+/**
+ * Beginner note:
+ * This file is one of the main backend data sources.
+ * It exports a large in-memory JavaScript array of brand and model objects.
+ *
+ * Used in:
+ * `backend/src/server.js`
+ *
+ * File flow:
+ * server route reads `carBrands` -> helper functions find the requested brand/model
+ * -> Express returns JSON -> frontend pages fetch that JSON and render it.
+ *
+ * Runtime note:
+ * This is real runtime data, not just TypeScript-only types.
+ * If you change values here, the API responses change.
+ */
 export const carBrands = [
   {
     slug: 'audi',
@@ -1725,10 +1741,23 @@ export const carBrands = [
 ]
 
 export function getBrandBySlug(slug) {
+  /**
+   * `find` returns the first array item that matches the condition.
+   * `slug?.toLowerCase()` uses optional chaining so the function does not crash
+   * if `slug` is missing or undefined.
+   */
   return carBrands.find((brand) => brand.slug === slug?.toLowerCase())
 }
 
 export function getModelBySlug(brandSlug, modelSlug) {
+  /**
+   * This small compatibility rule keeps old BMW links working.
+   * If a request asks for `340i`, the app internally maps it to `m340i`.
+   *
+   * Business reason:
+   * Backward compatibility avoids broken bookmarks and old internal links while
+   * the data model is being cleaned up.
+   */
   const normalizedSlug =
     brandSlug?.toLowerCase() === 'bmw' && modelSlug?.toLowerCase() === '340i'
       ? 'm340i'
@@ -1740,6 +1769,11 @@ export function getModelBySlug(brandSlug, modelSlug) {
 }
 
 export function getBrandSummaries() {
+  /**
+   * `map` transforms every brand into a smaller summary object.
+   * This is useful when the homepage only needs overview information rather than
+   * the full nested model dataset.
+   */
   return carBrands.map((brand) => ({
     slug: brand.slug,
     name: brand.name,

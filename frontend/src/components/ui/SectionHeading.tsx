@@ -8,8 +8,17 @@ type SectionHeadingProps = {
 }
 
 /**
- * SectionHeading centralizes repeated hero/section copy structure.
- * That keeps page files focused on content and routing decisions.
+ * Beginner note:
+ * This component standardizes the pattern:
+ * eyebrow text + main title + description + optional actions.
+ *
+ * Used in:
+ * homepage hero sections
+ * brand and family intro sections
+ * any page that needs a repeated heading structure
+ *
+ * Business role:
+ * Consistent headings help users understand where they are in the browsing flow.
  */
 export function SectionHeading({
   eyebrow,
@@ -20,6 +29,7 @@ export function SectionHeading({
   return (
     <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
       <div className="max-w-3xl">
+        {/* Optional "eyebrow" text is the small label above a main heading. */}
         <p className="mb-3 font-['Bahnschrift','Segoe_UI_Variable_Display','Trebuchet_MS',sans-serif] text-xs uppercase tracking-[0.4em] text-amber-200">
           {eyebrow}
         </p>
@@ -31,6 +41,7 @@ export function SectionHeading({
         </p>
       </div>
 
+      {/* `actions` is optional React content passed in by the parent page when needed. */}
       {actions ? <div className="flex flex-wrap gap-3">{actions}</div> : null}
     </div>
   )

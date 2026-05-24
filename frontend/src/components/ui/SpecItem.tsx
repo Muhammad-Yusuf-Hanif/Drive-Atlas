@@ -4,8 +4,10 @@ type SpecItemProps = {
 }
 
 /**
- * Model specs appear in multiple cards and panels.
- * A dedicated component makes the value/label rhythm consistent everywhere.
+ * Beginner note:
+ * This is a very small reusable display component.
+ * Small components like this are useful when the same visual pattern appears
+ * in several places.
  */
 export function SpecItem({ label, value }: SpecItemProps) {
   return (

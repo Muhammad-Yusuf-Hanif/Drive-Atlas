@@ -7,6 +7,17 @@ type OfficialResourcesCardProps = {
   resources: OfficialResources
 }
 
+/**
+ * Beginner note:
+ * This helper chooses which icon to show for each resource type.
+ * It returns the component itself, not JSX yet.
+ *
+ * Syntax note:
+ * `OfficialResources['links'][number]['type']` is a TypeScript indexed-access type.
+ * It means:
+ * "Look inside the `OfficialResources` type, then inside `links`, then the type
+ * of one array item, then the `type` field from that item."
+ */
 function getLinkIcon(type: OfficialResources['links'][number]['type']) {
   if (type === 'brochure') {
     return FileText
@@ -20,8 +31,13 @@ function getLinkIcon(type: OfficialResources['links'][number]['type']) {
 }
 
 /**
- * Official resource links are a safer alternative to self-hosted third-party
- * images because users are directed to OEM pages rather than copied media.
+ * Beginner note:
+ * This card renders official links such as brochures, recall checkers,
+ * or manufacturer pages.
+ *
+ * Business role:
+ * It gives users a trusted next step and reduces the need to copy external
+ * content directly into the project.
  */
 export function OfficialResourcesCard({ resources }: OfficialResourcesCardProps) {
   return (
@@ -36,6 +52,10 @@ export function OfficialResourcesCard({ resources }: OfficialResourcesCardProps)
 
       <div className="grid gap-4 md:grid-cols-2">
         {resources.links.map((link) => {
+          /**
+           * This is a common React pattern:
+           * choose a component in JavaScript first, then render it later like `<Icon />`.
+           */
           const Icon = getLinkIcon(link.type)
 
           return (

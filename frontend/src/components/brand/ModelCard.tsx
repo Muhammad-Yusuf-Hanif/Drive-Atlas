@@ -10,8 +10,17 @@ type ModelCardProps = {
 }
 
 /**
- * Model cards are used on the brand page and deliberately expose a concise set
- * of specs so users can quickly compare vehicles before opening the detail page.
+ * Beginner note:
+ * ModelCard is the next level down from BrandCard.
+ * It is used to compare cars inside one brand before the user opens a full
+ * detail page.
+ *
+ * Likely used in:
+ * `frontend/src/pages/BrandPage.tsx`
+ *
+ * Product role:
+ * It gives users enough information to scan quickly without overwhelming them
+ * with the full data structure.
  */
 export function ModelCard({ brand, model }: ModelCardProps) {
   return (
@@ -30,6 +39,7 @@ export function ModelCard({ brand, model }: ModelCardProps) {
         </div>
 
         <div className="space-y-5 p-6 sm:p-8">
+          {/* Top row: model identity and high-level category. */}
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.35em] text-slate-500">{brand.name}</p>
@@ -45,6 +55,7 @@ export function ModelCard({ brand, model }: ModelCardProps) {
 
           <p className="leading-7 text-slate-600">{model.shortDescription}</p>
 
+          {/* Reusable summary spec tiles help visual comparison across multiple cards. */}
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
               <div className="flex items-center gap-2 text-slate-500">

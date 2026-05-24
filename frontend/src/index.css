@@ -1,15 +1,22 @@
 @import "tailwindcss";
 
 /**
- * Global styles intentionally do a bit more than Tailwind defaults.
- * They define the visual direction of the project and a few shared surfaces.
+ * Beginner note:
+ * This file holds global CSS rules that apply across the whole frontend.
+ * Tailwind covers most styling, but global CSS is still useful for app-wide
+ * defaults like fonts, root background, scroll behavior, and element resets.
+ *
+ * File flow:
+ * `main.tsx` imports this once, so every page and component inherits these rules.
  */
 @theme {
+  /* CSS custom properties (variables) make fonts easier to reuse consistently. */
   --font-display: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
   --font-body: "Aptos", "Segoe UI Variable Text", "Segoe UI", sans-serif;
 }
 
 :root {
+  /* `:root` is the top-level document scope, useful for global defaults and variables. */
   font-family: var(--font-body);
   color: #0f172a;
   background: #09111d;
@@ -20,6 +27,7 @@
 }
 
 html {
+  /* Smooth scrolling helps anchor links like `/#brands` feel more polished. */
   scroll-behavior: smooth;
 }
 
@@ -29,6 +37,7 @@ body {
 }
 
 * {
+  /* `box-sizing: border-box` makes width/height calculations more predictable. */
   box-sizing: border-box;
 }
 
@@ -50,6 +59,7 @@ img {
 }
 
 #root {
+  /* This ensures the React app can stretch to full viewport height. */
   min-height: 100vh;
 }
 
