@@ -1,4 +1,5 @@
-import { Navigate, useParams } from 'react-router-dom'
+import { ArrowRight, Clock } from 'lucide-react'
+import { Link, Navigate, useParams } from 'react-router-dom'
 
 import { ModelCard } from '../components/brand/ModelCard'
 import { Breadcrumbs } from '../components/ui/Breadcrumbs'
@@ -8,6 +9,49 @@ import { SectionHeading } from '../components/ui/SectionHeading'
 import { StatusCard } from '../components/ui/StatusCard'
 import { useApiResource } from '../hooks/useApiResource'
 import type { CarBrand } from '../types/cars'
+
+const bmwSeriesDirectory = [
+  {
+    slug: '1-series',
+    name: '1 Series',
+    summary: 'Premium compact hatchback variants such as 116i, 116d, 118i, and 118d.',
+  },
+  {
+    slug: '2-series',
+    name: '2 Series',
+    summary: 'Compact coupe and Gran Coupe choices, from efficient 218i models to M240i.',
+  },
+  {
+    slug: '3-series',
+    name: '3 Series',
+    summary: 'Compact executive saloons, Touring models, plug-in hybrids, M340i, and M3.',
+  },
+  {
+    slug: '4-series',
+    name: '4 Series',
+    summary: 'Coupe, Convertible, Gran Coupe, and M4 coverage will sit here later.',
+  },
+  {
+    slug: '5-series',
+    name: '5 Series',
+    summary: 'Executive saloons, Touring models, plug-in hybrids, and M5 research planned.',
+  },
+  {
+    slug: '6-series',
+    name: '6 Series',
+    summary: 'Grand touring and Gran Turismo model history will be added later.',
+  },
+  {
+    slug: '7-series',
+    name: '7 Series',
+    summary: 'Luxury saloons, long-wheelbase models, hybrid variants, and ownership context.',
+  },
+  {
+    slug: '8-series',
+    name: '8 Series',
+    summary: 'Luxury coupe, convertible, Gran Coupe, and M8 model research planned.',
+  },
+]
 
 /**
  * The brand page resolves the URL parameter into the matching brand dataset.
@@ -39,6 +83,10 @@ export function BrandPage() {
         description="The frontend could not retrieve the selected brand from the backend. Check that the backend server is running and the route exists."
       />
     )
+  }
+
+  if (brand.slug === 'bmw') {
+    return <BmwBrandPage brand={brand} />
   }
 
   const featuredCurrentFamily = brand.currentFamilies?.[0]
@@ -310,6 +358,133 @@ export function BrandPage() {
           </div>
         </section>
       ) : null}
+    </div>
+  )
+}
+
+type BmwBrandPageProps = {
+  brand: CarBrand
+}
+
+function BmwBrandPage({ brand }: BmwBrandPageProps) {
+  const familyLookup = new Map(
+    brand.currentFamilies?.map((family) => [family.slug, family]) ?? [],
+  )
+  const availableSeriesCount = bmwSeriesDirectory.filter((series) =>
+    familyLookup.has(series.slug),
+  ).length
+
+  return (
+    <div className="space-y-10">
+      <Breadcrumbs items={[{ label: 'Home', to: '/' }, { label: brand.name }]} />
+
+      <section className="rounded-[2rem] border border-white/10 bg-slate-950/62 px-6 py-10 shadow-[0_25px_90px_rgba(2,6,23,0.35)] sm:px-8 lg:px-10">
+        <SectionHeading
+          eyebrow="BMW model range"
+          title="Choose the BMW series first."
+          description="Start with the numbered model line, then move into the exact generation and variant. This keeps the brand page clean and pushes detailed choices into the relevant series page."
+        />
+
+        <div className="mt-8 grid gap-4 text-white sm:grid-cols-3">
+          <div className="rounded-[1.5rem] border border-white/10 bg-white/8 p-5">
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-300">Available now</p>
+            <p className="mt-3 text-lg font-semibold">{availableSeriesCount} series</p>
+          </div>
+          <div className="rounded-[1.5rem] border border-white/10 bg-white/8 p-5">
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-300">Template order</p>
+            <p className="mt-3 text-lg font-semibold">1 Series to 8 Series</p>
+          </div>
+          <div className="rounded-[1.5rem] border border-white/10 bg-white/8 p-5">
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-300">Later expansion</p>
+            <p className="mt-3 text-lg font-semibold">BMW X and ALPINA</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-6">
+        <SectionHeading
+          eyebrow="Numbered series"
+          title="BMW cars in numerical order."
+          description="The brand page should work like a directory. Exact engines and trims belong inside each series page, not as shortcut buttons at the top."
+        />
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {bmwSeriesDirectory.map((series) => {
+            const family = familyLookup.get(series.slug)
+
+            if (family) {
+              return (
+                <Link
+                  key={series.slug}
+                  to={`/${brand.slug}/ranges/${family.slug}`}
+                  className="group flex min-h-56 flex-col justify-between rounded-lg border border-slate-200 bg-white/90 p-5 text-slate-950 shadow-[0_18px_55px_rgba(15,23,42,0.14)] transition hover:-translate-y-1 hover:border-slate-400 hover:bg-white"
+                >
+                  <div>
+                    <p className="text-xs font-semibold uppercase text-slate-500">
+                      Available now
+                    </p>
+                    <h2 className="mt-3 font-['Bahnschrift','Segoe_UI_Variable_Display','Trebuchet_MS',sans-serif] text-3xl">
+                      {series.name}
+                    </h2>
+                    <p className="mt-3 text-sm leading-6 text-slate-600">{series.summary}</p>
+                  </div>
+
+                  <div className="mt-5 flex items-center justify-between border-t border-slate-200 pt-4">
+                    <span className="text-sm font-semibold text-slate-700">
+                      {family.variantCount} variants
+                    </span>
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-950 text-white transition group-hover:bg-slate-800">
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
+                  </div>
+                </Link>
+              )
+            }
+
+            return (
+              <div
+                key={series.slug}
+                className="flex min-h-56 flex-col justify-between rounded-lg border border-dashed border-slate-300 bg-white/62 p-5 text-slate-950"
+              >
+                <div>
+                  <p className="text-xs font-semibold uppercase text-slate-500">
+                    Research planned
+                  </p>
+                  <h2 className="mt-3 font-['Bahnschrift','Segoe_UI_Variable_Display','Trebuchet_MS',sans-serif] text-3xl">
+                    {series.name}
+                  </h2>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">{series.summary}</p>
+                </div>
+
+                <div className="mt-5 flex items-center gap-2 border-t border-slate-200 pt-4 text-sm font-semibold text-slate-600">
+                  <Clock className="h-4 w-4" />
+                  <span>Coming soon</span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </section>
+
+      <section className="space-y-5">
+        <SectionHeading
+          eyebrow="Future specialist coverage"
+          title="BMW x ALPINA will sit below the numbered cars."
+          description="ALPINA models need their own treatment, so they are intentionally separated from the core 1 Series to 8 Series directory."
+        />
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="rounded-lg border border-dashed border-slate-300 bg-white/62 p-5 text-slate-950">
+            <p className="text-xs font-semibold uppercase text-slate-500">Coming soon</p>
+            <h2 className="mt-3 font-['Bahnschrift','Segoe_UI_Variable_Display','Trebuchet_MS',sans-serif] text-3xl">
+              BMW x ALPINA
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              This will be added after the numbered model pages are stable as reusable templates.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

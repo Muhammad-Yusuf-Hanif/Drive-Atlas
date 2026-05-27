@@ -154,18 +154,18 @@ export function CurrentGenerationPage() {
                       </div>
 
                       <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                        <p className="text-xs uppercase tracking-[0.24em] text-slate-500">0-60</p>
+                        <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Drive</p>
                         <p className="mt-3 text-lg font-semibold text-slate-950">
-                          {variant.specs.zeroToSixty}
+                          {variant.specs.drivetrain}
                         </p>
                       </div>
 
                       <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                         <p className="text-xs uppercase tracking-[0.24em] text-slate-500">
-                          Fuel type
+                          Engine
                         </p>
                         <p className="mt-3 text-lg font-semibold text-slate-950">
-                          {variant.specs.fuelType}
+                          {variant.specs.engineCode ?? variant.specs.fuelType}
                         </p>
                       </div>
                     </div>

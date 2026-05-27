@@ -22,6 +22,11 @@ type ModelHeroProps = {
  * This turns raw backend data into a strong first impression on the detail page.
  */
 export function ModelHero({ brand, model }: ModelHeroProps) {
+  const colours = Array.isArray(model.colours) ? model.colours : []
+  const heroDescription = model.longDescription || model.overview || model.shortDescription
+  const summary = model.shortDescription || model.overview || model.longDescription
+  const designStory = model.designStory || model.overview
+
   return (
     <Card className="overflow-hidden p-0">
       <div className="grid lg:grid-cols-[1.2fr_0.8fr]">
@@ -37,7 +42,7 @@ export function ModelHero({ brand, model }: ModelHeroProps) {
               <h2 className="mt-3 font-['Bahnschrift','Segoe_UI_Variable_Display','Trebuchet_MS',sans-serif] text-4xl tracking-[0.06em]">
                 {model.name}
               </h2>
-              <p className="mt-4 max-w-lg leading-7 text-white/85">{model.longDescription}</p>
+              <p className="mt-4 max-w-lg leading-7 text-white/85">{heroDescription}</p>
             </div>
 
             <div className="mt-8 rounded-[1.5rem] border border-white/15 bg-slate-950/25 p-5 backdrop-blur-sm">
@@ -62,37 +67,41 @@ export function ModelHero({ brand, model }: ModelHeroProps) {
             <div className="mb-3 inline-flex rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white">
               {model.category}
             </div>
-            <p className="leading-7 text-slate-600">{model.shortDescription}</p>
+            <p className="leading-7 text-slate-600">{summary}</p>
           </div>
 
-          <div className="grid gap-4 rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
-            <div className="flex items-center gap-2 text-slate-950">
-              <Palette className="h-4 w-4" />
-              <h3 className="text-sm font-semibold uppercase tracking-[0.28em]">Available colours</h3>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              {/* `map` loops through every colour object and returns one small UI block per colour. */}
-              {model.colours.map((colour) => (
-                <div
-                  key={colour.name}
-                  className="min-w-28 rounded-2xl border border-slate-200 bg-white p-3"
-                >
+          {colours.length ? (
+            <div className="grid gap-4 rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
+              <div className="flex items-center gap-2 text-slate-950">
+                <Palette className="h-4 w-4" />
+                <h3 className="text-sm font-semibold uppercase tracking-[0.28em]">
+                  Available colours
+                </h3>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {/* `map` loops through every colour object and returns one small UI block per colour. */}
+                {colours.map((colour) => (
                   <div
-                    className="h-10 rounded-xl border border-slate-200"
-                    style={{ background: colour.hex }}
-                  />
-                  <p className="mt-2 text-sm font-medium text-slate-950">{colour.name}</p>
-                </div>
-              ))}
+                    key={colour.name}
+                    className="min-w-28 rounded-2xl border border-slate-200 bg-white p-3"
+                  >
+                    <div
+                      className="h-10 rounded-xl border border-slate-200"
+                      style={{ background: colour.hex }}
+                    />
+                    <p className="mt-2 text-sm font-medium text-slate-950">{colour.name}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          ) : null}
 
           <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
             <div className="flex items-center gap-2 text-slate-950">
               <Settings2 className="h-4 w-4" />
               <h3 className="text-sm font-semibold uppercase tracking-[0.28em]">Design focus</h3>
             </div>
-            <p className="mt-3 leading-7 text-slate-600">{model.designStory}</p>
+            <p className="mt-3 leading-7 text-slate-600">{designStory}</p>
           </div>
         </div>
       </div>

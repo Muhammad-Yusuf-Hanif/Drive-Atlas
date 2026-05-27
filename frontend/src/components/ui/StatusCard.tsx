@@ -15,11 +15,11 @@ type StatusCardProps = {
  */
 export function StatusCard({ title, description }: StatusCardProps) {
   return (
-    <Card className="max-w-2xl">
-      <h2 className="font-['Bahnschrift','Segoe_UI_Variable_Display','Trebuchet_MS',sans-serif] text-3xl text-slate-950">
+    <Card className="max-w-2xl border-white/12 bg-slate-950/72 text-white">
+      <h2 className="font-['Bahnschrift','Segoe_UI_Variable_Display','Trebuchet_MS',sans-serif] text-3xl">
         {title}
       </h2>
-      <p className="mt-4 leading-7 text-slate-600">{description}</p>
+      <p className="mt-4 leading-7 text-slate-300">{description}</p>
     </Card>
   )
 }

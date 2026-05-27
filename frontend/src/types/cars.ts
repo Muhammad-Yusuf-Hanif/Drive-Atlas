@@ -93,6 +93,21 @@ export type OfficialResources = {
   links: OfficialResourceLink[]
 }
 
+export type AccuracyStatus = {
+  market: string
+  status: 'Verified' | 'Cross-checked' | 'Needs source confirmation'
+  sourceType: string
+  notes?: string
+  sources?: SourceLink[]
+}
+
+export type SpecialEditionLink = {
+  name: string
+  years: string
+  summary: string
+  distinguishingFeatures: string[]
+}
+
 export type CarSpecs = {
   power: string
   zeroToSixty: string
@@ -102,6 +117,7 @@ export type CarSpecs = {
   seats: string
   fuelType: string
   bodyStyle: string
+  engineCode?: string
 }
 
 export type CarModel = {
@@ -113,6 +129,7 @@ export type CarModel = {
   slug: string
   name: string
   category: string
+  productionYears?: string
   shortDescription: string
   longDescription: string
   designStory: string
@@ -123,6 +140,8 @@ export type CarModel = {
   specs: CarSpecs
   ownershipInfo?: OwnershipInfo
   officialResources?: OfficialResources
+  accuracy?: AccuracyStatus
+  specialEditions?: SpecialEditionLink[]
 }
 
 export type HistoricalFamilySummary = {
@@ -344,6 +363,7 @@ export type CarSearchResult = {
     slug: string
     name: string
     category: string
+    productionYears?: string
     shortDescription: string
     image: string
     imageBackground: string

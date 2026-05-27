@@ -32,7 +32,7 @@ export function SiteHeader() {
       manufacturerLinks.reduce<Array<{ letter: string; brands: CarBrand[] }>>(
         (groups, brand) => {
           const letter = brand.name.charAt(0).toUpperCase();
-          const currentGroup = groups.at(-1);
+          const currentGroup = groups[groups.length - 1];
 
           if (currentGroup?.letter === letter) {
             currentGroup.brands.push(brand);

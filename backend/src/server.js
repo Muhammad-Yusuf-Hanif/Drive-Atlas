@@ -69,12 +69,29 @@ function getNumericPower(power) {
   return powerMatch ? Number(powerMatch[0]) : null
 }
 
-function getEngineSizeLitres(vehicleName, fuelType) {
+function getEngineSizeLitres(vehicleName, fuelType, engineCode = '') {
   const name = vehicleName.toLowerCase()
   const fuel = fuelType.toLowerCase()
+  const engine = engineCode.toLowerCase()
 
   if (name.includes('rs 6')) return '4.0'
+  if (engine.includes('vr6') || engine.includes('3.2')) return '3.2'
   if (name.includes('m340i') || name.includes('m3')) return '3.0'
+  if (name.includes('m140i') || name.includes('m135i') || name.includes('135i')) return '3.0'
+  if (name.includes('m240i')) return '3.0'
+  if (engine.includes('b38') || engine.includes('b37')) return '1.5'
+  if (engine.includes('n13') || engine.includes('n45') || engine.includes('n46')) return '1.6'
+  if (engine.includes('1.4')) return '1.4'
+  if (engine.includes('1.5')) return '1.5'
+  if (engine.includes('1.6')) return '1.6'
+  if (engine.includes('2.0') || engine.includes('ea888') || engine.includes('ea288') || engine.includes('ea113')) return '2.0'
+  if (name.includes('114') || name.includes('116') || name.includes('118') || name.includes('218')) {
+    return '1.6'
+  }
+  if (name.includes('120') || name.includes('123') || name.includes('125') || name.includes('130')) {
+    return name.includes('130') ? '3.0' : '2.0'
+  }
+  if (name.includes('220')) return '2.0'
   if (name.includes('330') || name.includes('320') || name.includes('318')) return '2.0'
   if (name.includes('golf r') || name.includes('octavia')) return '2.0'
   if (name.includes('mx-5')) return '2.0'
@@ -123,7 +140,11 @@ function createSearchRecord({
   yearLabel,
 }) {
   const features = getSearchFeatures(variant)
-  const engineSizeLitres = getEngineSizeLitres(variant.name, variant.specs.fuelType)
+  const engineSizeLitres = getEngineSizeLitres(
+    variant.name,
+    variant.specs.fuelType,
+    variant.specs.engineCode,
+  )
 
   return {
     id: `${source}:${route}`,
@@ -148,6 +169,7 @@ function createSearchRecord({
       slug: variant.slug,
       name: variant.name,
       category: variant.category,
+      productionYears: variant.productionYears,
       shortDescription: variant.shortDescription,
       image: variant.image,
       imageBackground: variant.imageBackground,
@@ -315,6 +337,8 @@ app.get('/api/search', (request, response) => {
       specs.fuelType,
       specs.transmission,
       specs.drivetrain,
+      specs.engineCode,
+      record.vehicle.productionYears,
       record.vehicle.engineSizeLitres,
     ]
       .filter(Boolean)

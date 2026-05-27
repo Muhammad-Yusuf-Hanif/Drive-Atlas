@@ -169,7 +169,7 @@ export function HistoricalFamilyPage() {
         <SectionHeading
           eyebrow="Choose a generation"
           title={`Browse ${family.name} generations`}
-          description="Pick the generation first. The next page shows the exact variants covered within that platform, along with engine-family guidance for the era."
+          description="Pick the platform era first, then choose the exact engine or trim variant. This mirrors the newer series pages so users do not have to guess where a variant belongs."
         />
 
         <div className="grid gap-6">
@@ -178,22 +178,22 @@ export function HistoricalFamilyPage() {
              * Each card represents one platform/code era.
              * The user does not choose an engine yet; they choose the generation first.
              */
-            <Card key={generation.slug} className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-              <div>
-                <p className="text-xs uppercase tracking-[0.32em] text-slate-500">Generation</p>
-                <h2 className="mt-3 font-['Bahnschrift','Segoe_UI_Variable_Display','Trebuchet_MS',sans-serif] text-3xl text-slate-950">
-                  {generation.label}
-                </h2>
-                <p className="mt-4 text-sm font-semibold uppercase tracking-[0.22em] text-amber-700">
-                  {generation.yearStart} to {generation.yearEnd}
-                </p>
-                {generation.summary ? (
-                  <p className="mt-4 leading-7 text-slate-600">{generation.summary}</p>
-                ) : null}
-              </div>
+            <Card key={generation.slug} className="space-y-6">
+              <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                <div className="max-w-3xl">
+                  <p className="text-xs uppercase tracking-[0.32em] text-slate-500">Generation</p>
+                  <h2 className="mt-3 font-['Bahnschrift','Segoe_UI_Variable_Display','Trebuchet_MS',sans-serif] text-3xl text-slate-950">
+                    {generation.label}
+                  </h2>
+                  <p className="mt-4 text-sm font-semibold uppercase tracking-[0.22em] text-amber-700">
+                    {generation.yearStart} to {generation.yearEnd}
+                  </p>
+                  {generation.summary ? (
+                    <p className="mt-4 leading-7 text-slate-600">{generation.summary}</p>
+                  ) : null}
+                </div>
 
-              <div className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid w-full max-w-sm grid-cols-2 gap-4">
                   <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
                     <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Phases</p>
                     <p className="mt-2 text-2xl font-semibold text-slate-950">
@@ -209,18 +209,27 @@ export function HistoricalFamilyPage() {
                     </p>
                   </div>
                 </div>
+              </div>
 
-                <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
-                  <p className="text-sm leading-6 text-slate-600">
-                    Open this generation to see the exact covered variants and then choose the
-                    specific car you want to research.
-                  </p>
+              {generation.engineGuide?.length ? (
+                <div className="grid gap-3 md:grid-cols-2">
+                  {generation.engineGuide.slice(0, 4).map((engine) => (
+                    <div
+                      key={engine.slug}
+                      className="rounded-xl border border-slate-200 bg-white/82 p-4"
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                        {engine.fuelType}
+                      </p>
+                      <h3 className="mt-2 text-lg font-semibold text-slate-950">{engine.name}</h3>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">{engine.buyerFit}</p>
+                    </div>
+                  ))}
                 </div>
+              ) : null}
 
-                <ButtonLink
-                  to={`/${brand.slug}/families/${family.slug}/${generation.slug}`}
-                  className="w-full"
-                >
+              <div>
+                <ButtonLink to={`/${brand.slug}/families/${family.slug}/${generation.slug}`}>
                   Open {generation.label}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </ButtonLink>

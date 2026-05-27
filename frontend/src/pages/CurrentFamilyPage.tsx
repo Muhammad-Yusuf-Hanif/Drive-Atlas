@@ -1,5 +1,7 @@
 import { ArrowRight } from 'lucide-react'
-import { Navigate, useParams } from 'react-router-dom'
+import type { ReactNode } from 'react'
+import { useState } from 'react'
+import { Link, Navigate, useParams } from 'react-router-dom'
 
 import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { ButtonLink } from '../components/ui/ButtonLink'
@@ -7,10 +9,11 @@ import { Card } from '../components/ui/Card'
 import { SectionHeading } from '../components/ui/SectionHeading'
 import { StatusCard } from '../components/ui/StatusCard'
 import { useApiResource } from '../hooks/useApiResource'
-import type { CurrentFamilyPagePayload } from '../types/cars'
+import type { CurrentFamilyPagePayload, CurrentVariant } from '../types/cars'
 
 export function CurrentFamilyPage() {
   const { brandSlug, familySlug } = useParams()
+  const [openGenerationSlug, setOpenGenerationSlug] = useState<string | null | undefined>()
   const { data, errorStatus, isLoading } = useApiResource<CurrentFamilyPagePayload>(
     `/api/${brandSlug ?? ''}/ranges/${familySlug ?? ''}`,
   )
@@ -44,6 +47,12 @@ export function CurrentFamilyPage() {
     (total, generation) => total + generation.variants.length,
     0,
   )
+  const useGenerationDropdowns = brand.slug === 'bmw' && family.slug === '3-series'
+  const defaultOpenGenerationSlug = useGenerationDropdowns
+    ? family.generations[family.generations.length - 1]?.slug
+    : undefined
+  const selectedGenerationSlug =
+    openGenerationSlug === undefined ? defaultOpenGenerationSlug : openGenerationSlug
 
   return (
     <div className="space-y-10">
@@ -115,29 +124,33 @@ export function CurrentFamilyPage() {
 
       <section className="space-y-6">
         <SectionHeading
-          eyebrow="Choose a platform"
-          title={`Current ${family.name} generations`}
-          description="Start with the generation or body-code group you actually want. The next page narrows the search to the exact variants inside that platform."
+          eyebrow="Choose a variant"
+          title={`${family.name} variants by generation`}
+          description="Pick the exact engine or trim first. Generation context stays visible here, but the user can go straight to the variant they are researching."
         />
 
         <div className="grid gap-6">
           {family.generations.map((generation) => (
-            <Card key={generation.slug} className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-              <div>
-                <p className="text-xs uppercase tracking-[0.32em] text-slate-500">Generation</p>
-                <h2 className="mt-3 font-['Bahnschrift','Segoe_UI_Variable_Display','Trebuchet_MS',sans-serif] text-3xl text-slate-950">
-                  {generation.label}
-                </h2>
-                <p className="mt-4 text-sm font-semibold uppercase tracking-[0.22em] text-amber-700">
-                  {generation.yearStart} to {generation.yearEnd}
-                </p>
-                <p className="mt-4 leading-7 text-slate-600">{generation.summary}</p>
-              </div>
+            <Card key={generation.slug} className="space-y-6">
+              <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                <div className="max-w-3xl">
+                  <p className="text-xs uppercase tracking-[0.32em] text-slate-500">
+                    Generation
+                  </p>
+                  <h2 className="mt-3 font-['Bahnschrift','Segoe_UI_Variable_Display','Trebuchet_MS',sans-serif] text-3xl text-slate-950">
+                    {generation.label}
+                  </h2>
+                  <p className="mt-4 text-sm font-semibold uppercase tracking-[0.22em] text-amber-700">
+                    {generation.yearStart} to {generation.yearEnd}
+                  </p>
+                  <p className="mt-4 leading-7 text-slate-600">{generation.summary}</p>
+                </div>
 
-              <div className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid w-full max-w-sm grid-cols-2 gap-4">
                   <div className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
-                    <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Variants</p>
+                    <p className="text-xs uppercase tracking-[0.24em] text-slate-500">
+                      Variants
+                    </p>
                     <p className="mt-2 text-2xl font-semibold text-slate-950">
                       {generation.variants.length}
                     </p>
@@ -151,19 +164,179 @@ export function CurrentFamilyPage() {
                     </p>
                   </div>
                 </div>
+              </div>
 
+              {useGenerationDropdowns ? (
+                <GenerationDropdownContent
+                  brandSlug={brand.slug}
+                  familySlug={family.slug}
+                  generationSlug={generation.slug}
+                  isOpen={selectedGenerationSlug === generation.slug}
+                  onToggle={() =>
+                    setOpenGenerationSlug((currentSlug) =>
+                      (currentSlug === undefined ? defaultOpenGenerationSlug : currentSlug) ===
+                      generation.slug
+                        ? null
+                        : generation.slug,
+                    )
+                  }
+                >
+                  <VariantGrid
+                    brandName={brand.name}
+                    brandSlug={brand.slug}
+                    familySlug={family.slug}
+                    generationSlug={generation.slug}
+                    variants={generation.variants}
+                  />
+                </GenerationDropdownContent>
+              ) : (
+                <VariantGrid
+                  brandName={brand.name}
+                  brandSlug={brand.slug}
+                  familySlug={family.slug}
+                  generationSlug={generation.slug}
+                  variants={generation.variants}
+                />
+              )}
+
+              <div>
                 <ButtonLink
                   to={`/${brand.slug}/ranges/${family.slug}/${generation.slug}`}
-                  className="w-full"
+                  variant="secondary"
                 >
-                  Open {generation.label}
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  View generation overview
                 </ButtonLink>
               </div>
             </Card>
           ))}
         </div>
       </section>
+    </div>
+  )
+}
+
+type VariantFactProps = {
+  label: string
+  value: string
+}
+
+type GenerationDropdownContentProps = {
+  brandSlug: string
+  familySlug: string
+  generationSlug: string
+  isOpen: boolean
+  onToggle: () => void
+  children: ReactNode
+}
+
+function GenerationDropdownContent({
+  brandSlug,
+  familySlug,
+  generationSlug,
+  isOpen,
+  onToggle,
+  children,
+}: GenerationDropdownContentProps) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-slate-50/80">
+      <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={isOpen}
+          className="inline-flex items-center justify-center rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+        >
+          {isOpen ? 'Minimise variants' : 'Show variants'}
+        </button>
+
+        <Link
+          to={`/${brandSlug}/ranges/${familySlug}/${generationSlug}`}
+          className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:border-slate-950"
+        >
+          View generation overview
+        </Link>
+      </div>
+
+      {isOpen ? <div className="border-t border-slate-200 p-4">{children}</div> : null}
+    </div>
+  )
+}
+
+type VariantGridProps = {
+  brandName: string
+  brandSlug: string
+  familySlug: string
+  generationSlug: string
+  variants: CurrentVariant[]
+}
+
+function VariantGrid({
+  brandName,
+  brandSlug,
+  familySlug,
+  generationSlug,
+  variants,
+}: VariantGridProps) {
+  return (
+    <div className="grid gap-4 md:grid-cols-2">
+      {variants.map((variant) => (
+        <Link
+          key={variant.slug}
+          to={`/${brandSlug}/ranges/${familySlug}/${generationSlug}/${variant.slug}`}
+          className="group overflow-hidden rounded-xl border border-slate-200 bg-white/88 text-slate-950 shadow-[0_16px_42px_rgba(15,23,42,0.1)] transition hover:-translate-y-1 hover:border-slate-400 hover:bg-white"
+        >
+          <div
+            className="relative min-h-36 border-b border-white/30 p-4"
+            style={{ background: variant.imageBackground }}
+          >
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.22),_transparent_34%)]" />
+            <img
+              src={variant.image}
+              alt={`${brandName} ${variant.name}`}
+              className="relative ml-auto w-full max-w-xs drop-shadow-[0_18px_26px_rgba(2,6,23,0.38)] transition group-hover:scale-[1.03]"
+            />
+          </div>
+
+          <div className="space-y-4 p-5">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
+                  {variant.category}
+                </p>
+                <h3 className="mt-2 font-['Bahnschrift','Segoe_UI_Variable_Display','Trebuchet_MS',sans-serif] text-2xl">
+                  {variant.name}
+                </h3>
+                {variant.productionYears ? (
+                  <p className="mt-1 text-sm font-semibold text-amber-700">
+                    {variant.productionYears}
+                  </p>
+                ) : null}
+              </div>
+              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-950 text-white transition group-hover:bg-slate-800">
+                <ArrowRight className="h-4 w-4" />
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              <VariantFact label="Power" value={variant.specs.power} />
+              <VariantFact label="Drive" value={variant.specs.drivetrain} />
+              <VariantFact label="Engine" value={variant.specs.engineCode ?? 'TBC'} />
+              <VariantFact label="Fuel" value={variant.specs.fuelType} />
+            </div>
+          </div>
+        </Link>
+      ))}
+    </div>
+  )
+}
+
+function VariantFact({ label, value }: VariantFactProps) {
+  return (
+    <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+      <p className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-slate-500">
+        {label}
+      </p>
+      <p className="mt-1 font-semibold text-slate-950">{value}</p>
     </div>
   )
 }

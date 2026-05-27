@@ -4,7 +4,10 @@ import { StatusCard } from "../components/ui/StatusCard";
 import { useApiResource } from "../hooks/useApiResource";
 import type { CarBrand } from "../types/cars";
 import { ArrowRight, Clock } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+
+const heroVideoSrc = "/media/premium-pov-driving.mp4";
 
 const popularBrands = [
   {
@@ -64,6 +67,7 @@ const popularBrands = [
  * users cannot easily enter the rest of the site.
  */
 export function HomePage() {
+  const [showHeroVideo, setShowHeroVideo] = useState(true);
   /**
    * Syntax note:
    * `useApiResource<CarBrand[]>` uses a TypeScript generic.
@@ -101,16 +105,32 @@ export function HomePage() {
 
   return (
     <div className="space-y-10">
-      {/* This hero section explains the app's browsing model before users scroll into the brand list. */}
-      <section className="rounded-[2rem] border border-white/10 bg-slate-950/40 px-6 py-10 shadow-[0_25px_90px_rgba(2,6,23,0.35)] sm:px-8 lg:px-10">
-        <SectionHeading
-          eyebrow="Official brand explorer"
-          title="Cars - Complete Automotive Research Service."
-          description="Start at the manufacturer level, move into model ranges, and finish on a focused vehicle detail page with design cues, specifications, recalls, service guidance, and buyer context."
-        />
-      </section>
+      <section className="relative isolate overflow-hidden rounded-[2rem] border border-white/20 bg-slate-950 px-4 py-8 shadow-[0_28px_95px_rgba(2,6,23,0.38)] sm:px-6 sm:py-10 lg:px-8">
+        {showHeroVideo ? (
+          <video
+            className="absolute inset-0 -z-20 h-full w-full object-cover"
+            src={heroVideoSrc}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            onError={() => setShowHeroVideo(false)}
+          />
+        ) : null}
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,_rgba(2,6,23,0.92)_0%,_rgba(15,23,42,0.76)_46%,_rgba(15,23,42,0.44)_100%)]" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,_rgba(251,191,36,0.22),_transparent_34%)]" />
 
-      <VehicleSearchPanel />
+        <div className="grid gap-6 lg:grid-cols-[0.86fr_1.14fr] lg:items-start">
+          <SectionHeading
+            eyebrow="Premium car research"
+            title="Find the right car by requirement, not guesswork."
+            description="Search by body style, engine, drivetrain, seats, and required equipment. Results only show vehicles that match the filters you choose."
+          />
+
+          <VehicleSearchPanel />
+        </div>
+      </section>
 
       <section id="brands" className="scroll-mt-28 space-y-5">
         <SectionHeading
