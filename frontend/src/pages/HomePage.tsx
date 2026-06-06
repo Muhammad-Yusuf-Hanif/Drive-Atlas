@@ -1,4 +1,5 @@
 import { VehicleSearchPanel } from "../components/search/VehicleSearchPanel";
+import { PageSkeleton } from "../components/ui/PageSkeleton";
 import { SectionHeading } from "../components/ui/SectionHeading";
 import { StatusCard } from "../components/ui/StatusCard";
 import { useApiResource } from "../hooks/useApiResource";
@@ -84,12 +85,7 @@ export function HomePage() {
   } = useApiResource<CarBrand[]>("/api/brands");
 
   if (isLoading) {
-    return (
-      <StatusCard
-        title="Loading showroom"
-        description="The homepage is fetching the latest brand data from the Drive Atlas API."
-      />
-    );
+    return <PageSkeleton title="Loading showroom" rows={6} />;
   }
 
   if (errorStatus || !carBrands) {

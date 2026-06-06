@@ -1,5 +1,11 @@
 import { createCarImage } from '../utils/svg.js'
 import { getModelBySlug } from './carBrands.js'
+import {
+  getCurrentBrandFamilyDataFromRegistry,
+  getCurrentFamilyFromRegistry,
+  getCurrentGenerationFromRegistry,
+  getCurrentVariantFromRegistry,
+} from './currentFamilies/brandRegistry.js'
 
 function createCurrentVariant(config) {
   return {
@@ -2892,18 +2898,19 @@ function hydrateBmwSeriesMetadata() {
 hydrateBmwSeriesMetadata()
 
 export function getCurrentBrandFamilyData(brandSlug) {
-  return currentBrandFamilies[brandSlug?.toLowerCase()]
+  return getCurrentBrandFamilyDataFromRegistry(currentBrandFamilies, brandSlug)
 }
 
 export function getCurrentFamilyBySlug(brandSlug, familySlug) {
-  return getCurrentBrandFamilyData(brandSlug)?.families.find(
-    (family) => family.slug === familySlug?.toLowerCase(),
-  )
+  return getCurrentFamilyFromRegistry(currentBrandFamilies, brandSlug, familySlug)
 }
 
 export function getCurrentGenerationBySlug(brandSlug, familySlug, generationSlug) {
-  return getCurrentFamilyBySlug(brandSlug, familySlug)?.generations.find(
-    (generation) => generation.slug === generationSlug?.toLowerCase(),
+  return getCurrentGenerationFromRegistry(
+    currentBrandFamilies,
+    brandSlug,
+    familySlug,
+    generationSlug,
   )
 }
 
@@ -2913,8 +2920,12 @@ export function getCurrentVariantBySlug(
   generationSlug,
   variantSlug,
 ) {
-  return getCurrentGenerationBySlug(brandSlug, familySlug, generationSlug)?.variants.find(
-    (variant) => variant.slug === variantSlug?.toLowerCase(),
+  return getCurrentVariantFromRegistry(
+    currentBrandFamilies,
+    brandSlug,
+    familySlug,
+    generationSlug,
+    variantSlug,
   )
 }
 

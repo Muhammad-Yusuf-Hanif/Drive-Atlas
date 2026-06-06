@@ -6,6 +6,7 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { ButtonLink } from '../components/ui/ButtonLink'
 import { Card } from '../components/ui/Card'
+import { PageSkeleton } from '../components/ui/PageSkeleton'
 import { SectionHeading } from '../components/ui/SectionHeading'
 import { StatusCard } from '../components/ui/StatusCard'
 import { useApiResource } from '../hooks/useApiResource'
@@ -23,12 +24,7 @@ export function CurrentFamilyPage() {
   }
 
   if (isLoading) {
-    return (
-      <StatusCard
-        title="Loading family"
-        description="The family page is fetching current generation coverage from the backend API."
-      />
-    )
+    return <PageSkeleton title="Loading family" />
   }
 
   if (errorStatus || !data) {
@@ -47,7 +43,8 @@ export function CurrentFamilyPage() {
     (total, generation) => total + generation.variants.length,
     0,
   )
-  const useGenerationDropdowns = brand.slug === 'bmw' && family.slug === '3-series'
+  const useGenerationDropdowns =
+    brand.slug === 'bmw' && ['1-series', '2-series', '3-series'].includes(family.slug)
   const defaultOpenGenerationSlug = useGenerationDropdowns
     ? family.generations[family.generations.length - 1]?.slug
     : undefined
@@ -181,13 +178,15 @@ export function CurrentFamilyPage() {
                     )
                   }
                 >
-                  <VariantGrid
-                    brandName={brand.name}
-                    brandSlug={brand.slug}
-                    familySlug={family.slug}
-                    generationSlug={generation.slug}
-                    variants={generation.variants}
-                  />
+                  {selectedGenerationSlug === generation.slug ? (
+                    <VariantGrid
+                      brandName={brand.name}
+                      brandSlug={brand.slug}
+                      familySlug={family.slug}
+                      generationSlug={generation.slug}
+                      variants={generation.variants}
+                    />
+                  ) : null}
                 </GenerationDropdownContent>
               ) : (
                 <VariantGrid

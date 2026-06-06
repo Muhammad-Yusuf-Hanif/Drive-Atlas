@@ -4,6 +4,7 @@ import { OwnershipInfoCard } from '../components/brand/OwnershipInfoCard'
 import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { ButtonLink } from '../components/ui/ButtonLink'
 import { Card } from '../components/ui/Card'
+import { PageSkeleton } from '../components/ui/PageSkeleton'
 import { SpecItem } from '../components/ui/SpecItem'
 import { StatusCard } from '../components/ui/StatusCard'
 import { useApiResource } from '../hooks/useApiResource'
@@ -20,12 +21,7 @@ export function HistoricalVariantPage() {
   }
 
   if (isLoading) {
-    return (
-      <StatusCard
-        title="Loading variant"
-        description="The variant page is fetching the selected family-generation record from the backend API."
-      />
-    )
+    return <PageSkeleton title="Loading variant" rows={3} />
   }
 
   if (errorStatus || !data) {

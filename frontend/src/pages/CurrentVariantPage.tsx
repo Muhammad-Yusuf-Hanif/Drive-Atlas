@@ -5,6 +5,7 @@ import { StickyBackHome } from '../components/navigation/StickyBackHome'
 import { OwnershipInfoCard } from '../components/brand/OwnershipInfoCard'
 import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { Card } from '../components/ui/Card'
+import { PageSkeleton } from '../components/ui/PageSkeleton'
 import { SpecItem } from '../components/ui/SpecItem'
 import { StatusCard } from '../components/ui/StatusCard'
 import { useApiResource } from '../hooks/useApiResource'
@@ -21,12 +22,7 @@ export function CurrentVariantPage() {
   }
 
   if (isLoading) {
-    return (
-      <StatusCard
-        title="Loading variant"
-        description="The current variant page is fetching the selected vehicle record from the backend API."
-      />
-    )
+    return <PageSkeleton title="Loading variant" rows={3} />
   }
 
   if (errorStatus || !data) {

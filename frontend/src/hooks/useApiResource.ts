@@ -2,6 +2,8 @@ import { useEffect, useReducer } from 'react'
 
 import { fetchJson } from '../api/client'
 
+const apiResourceCache = new Map<string, unknown>()
+
 /**
  * Beginner note:
  * This type describes the shape of the data we store while waiting for an API request.
@@ -82,6 +84,7 @@ function apiStateReducer<T>(_state: ApiState<T>, action: ApiAction<T>): ApiState
  * -> JSON returns -> page renders with the new data
  */
 export function useApiResource<T>(path: string) {
+  const cachedData = apiResourceCache.get(path) as T | undefined
   // useReducer is slightly more verbose than multiple useState calls, but it
   // makes the async fetch lifecycle explicit: request -> success -> failure.
   //
@@ -93,14 +96,21 @@ export function useApiResource<T>(path: string) {
   // "take the first value and call it `state`,
   // and take the second value and call it `dispatch`."
   const [state, dispatch] = useReducer(apiStateReducer<T>, {
-    data: null,
+    data: cachedData ?? null,
     errorStatus: null,
-    isLoading: true,
+    isLoading: !cachedData,
   })
 
   // `useEffect(...)` lets us run side-effect code after React renders.
   // Here the side effect is the API request.
   useEffect(() => {
+    const cachedData = apiResourceCache.get(path) as T | undefined
+
+    if (cachedData) {
+      dispatch({ type: 'success', data: cachedData })
+      return
+    }
+
     const controller = new AbortController()
 
     // Every time the path changes we treat it as a new page load and reset the
@@ -110,6 +120,7 @@ export function useApiResource<T>(path: string) {
     fetchJson<T>(path, controller.signal)
       .then((data) => {
         // `.then(...)` runs when the request succeeds.
+        apiResourceCache.set(path, data)
         dispatch({ type: 'success', data })
       })
       .catch((error: Error & { status?: number }) => {

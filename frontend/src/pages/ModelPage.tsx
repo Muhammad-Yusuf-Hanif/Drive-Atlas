@@ -5,6 +5,7 @@ import { StickyBackHome } from '../components/navigation/StickyBackHome'
 import { OwnershipInfoCard } from '../components/brand/OwnershipInfoCard'
 import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { Card } from '../components/ui/Card'
+import { PageSkeleton } from '../components/ui/PageSkeleton'
 import { SpecItem } from '../components/ui/SpecItem'
 import { StatusCard } from '../components/ui/StatusCard'
 import { useApiResource } from '../hooks/useApiResource'
@@ -49,12 +50,7 @@ export function ModelPage() {
   }
 
   if (isLoading) {
-    return (
-      <StatusCard
-        title="Loading model"
-        description="The model page is fetching the selected vehicle record from the backend API."
-      />
-    )
+    return <PageSkeleton title="Loading model" rows={3} />
   }
 
   if (errorStatus || !data) {

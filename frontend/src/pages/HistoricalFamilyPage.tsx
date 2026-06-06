@@ -4,6 +4,7 @@ import { Navigate, useParams } from 'react-router-dom'
 import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { ButtonLink } from '../components/ui/ButtonLink'
 import { Card } from '../components/ui/Card'
+import { PageSkeleton } from '../components/ui/PageSkeleton'
 import { SectionHeading } from '../components/ui/SectionHeading'
 import { StatusCard } from '../components/ui/StatusCard'
 import { useApiResource } from '../hooks/useApiResource'
@@ -37,12 +38,7 @@ export function HistoricalFamilyPage() {
   }
 
   if (isLoading) {
-    return (
-      <StatusCard
-        title="Loading family"
-        description="The family page is fetching generation coverage from the backend API."
-      />
-    )
+    return <PageSkeleton title="Loading family" />
   }
 
   if (errorStatus || !data) {

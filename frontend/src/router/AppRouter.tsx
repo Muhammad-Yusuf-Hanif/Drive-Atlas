@@ -11,6 +11,7 @@ import { HistoricalVariantPage } from '../pages/HistoricalVariantPage'
 import { HomePage } from '../pages/HomePage'
 import { ModelPage } from '../pages/ModelPage'
 import { NotFoundPage } from '../pages/NotFoundPage'
+import { ScrollManager } from './ScrollManager'
 
 /**
  * Beginner note:
@@ -68,6 +69,7 @@ export function AppRouter() {
   return (
     // `BrowserRouter` turns on React Router for the whole app.
     <BrowserRouter>
+      <ScrollManager />
       <Routes>
         <Route element={<AppLayout />}>
           // `index` means the default child route, which here is the homepage.

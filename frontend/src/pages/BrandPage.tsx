@@ -5,6 +5,7 @@ import { ModelCard } from '../components/brand/ModelCard'
 import { Breadcrumbs } from '../components/ui/Breadcrumbs'
 import { ButtonLink } from '../components/ui/ButtonLink'
 import { Card } from '../components/ui/Card'
+import { PageSkeleton } from '../components/ui/PageSkeleton'
 import { SectionHeading } from '../components/ui/SectionHeading'
 import { StatusCard } from '../components/ui/StatusCard'
 import { useApiResource } from '../hooks/useApiResource'
@@ -68,12 +69,7 @@ export function BrandPage() {
   }
 
   if (isLoading) {
-    return (
-      <StatusCard
-        title="Loading brand"
-        description="The brand route is fetching models, specs, and colour information from the backend API."
-      />
-    )
+    return <PageSkeleton title="Loading brand" />
   }
 
   if (errorStatus || !brand) {

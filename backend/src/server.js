@@ -282,8 +282,15 @@ function getQueryValues(value) {
 // `cors()` helps browser requests work during development when frontend and
 // backend are treated as separate origins.
 // `express.json()` prepares Express to read JSON request bodies.
-app.use(cors())
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://drive-atlas.netlify.app"
+  ]
+}
+))
 app.use(express.json())
+
 
 /**
  * Beginner note:
