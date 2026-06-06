@@ -283,12 +283,26 @@ function getQueryValues(value) {
 // backend are treated as separate origins.
 // `express.json()` prepares Express to read JSON request bodies.
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://drive-atlas.netlify.app"
-  ]
-}
-))
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "https://drive-atlas.netlify.app"
+    ]
+
+    if (!origin) {
+      return callback(null, true)
+    }
+
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.endsWith("--drive-atlas.netlify.app")
+    ) {
+      return callback(null, true)
+    }
+
+    return callback(new Error("Not allowed by CORS"))
+  }
+}))
 app.use(express.json())
 
 
