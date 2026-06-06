@@ -13,6 +13,24 @@
  * if many pages all make requests, it is better for them to share one helper
  * than to copy and paste raw `fetch(...)` code everywhere.
  */
+
+/**
+ * VITE_API_BASE_URL:
+ * This is an environment variable.
+ *
+ * Locally, it can be empty, so requests can still go to `/api/...`
+ * using your local dev setup.
+ *
+ * On Netlify, you will set this to your deployed backend URL, for example:
+ * https://drive-atlas-backend.onrender.com
+ *
+ * So:
+ * `/api/brands`
+ * becomes:
+ * `https://drive-atlas-backend.onrender.com/api/brands`
+ */
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ''
+
 export async function fetchJson<T>(path: string, signal?: AbortSignal): Promise<T> {
   /**
    * Syntax explanation:
@@ -38,13 +56,22 @@ export async function fetchJson<T>(path: string, signal?: AbortSignal): Promise<
    * A Promise means "the real result will arrive later."
    */
 
-  // The browser automatically resolves this relative path against the current
-  // site origin, which keeps local frontend/backend development simple.
-  //
-  // Beginner note:
-  // `await` means:
-  // "wait here until the Promise finishes."
-  const response = await fetch(path, {
+  /**
+   * This builds the final URL.
+   *
+   * Locally:
+   * API_BASE_URL is usually empty.
+   * path is `/api/brands`.
+   * Final URL becomes `/api/brands`.
+   *
+   * On Netlify:
+   * API_BASE_URL is your deployed backend URL.
+   * path is `/api/brands`.
+   * Final URL becomes `https://your-backend-url.onrender.com/api/brands`.
+   */
+  const url = `${API_BASE_URL}${path}`
+
+  const response = await fetch(url, {
     headers: {
       Accept: 'application/json',
     },
@@ -52,18 +79,10 @@ export async function fetchJson<T>(path: string, signal?: AbortSignal): Promise<
   })
 
   if (!response.ok) {
-    // The custom status property lets route pages make decisions like
-    // redirecting 404s to the not-found page.
-    //
-    // Beginner note:
-    // `response.ok` is false if the server returned an error status like 404 or 500.
     const error = new Error(`Request failed with status ${response.status}`)
-    // `Object.assign(...)` adds the numeric status onto the Error object so
-    // the calling code can inspect it later.
     Object.assign(error, { status: response.status })
     throw error
   }
 
-  // `response.json()` turns the HTTP response body into a JavaScript object.
   return response.json() as Promise<T>
 }
